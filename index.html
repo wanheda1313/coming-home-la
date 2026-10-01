@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A step-by-step 90-day checklist for people coming home from incarceration in Los Angeles County.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Coming Home LA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a numbered road home (timeline checklist) beside a sticky "numbers to keep" card; stacks to one column on phones. */
+:root {
+  --bg: #eef2f3;
+  --surface: #ffffff;
+  --ink: #14222b;
+  --muted: #53646e;
+  --line: #d3dde1;
+  --accent: #c7761b;        /* first-light amber */
+  --accent-soft: #fbead3;
+  --road: #1d4e63;          /* deep morning blue */
+  --road-soft: #dde9ee;
+  --done: #2f7a55;
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f171c; --surface: #16222a; --ink: #e6eef1; --muted: #9db0b9; --line: #2a3a44;
+    --accent: #eaa04a; --accent-soft: #3a2a15; --road: #7fb6cc; --road-soft: #1c313b; --done: #6cc496;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f171c; --surface: #16222a; --ink: #e6eef1; --muted: #9db0b9; --line: #2a3a44;
+  --accent: #eaa04a; --accent-soft: #3a2a15; --road: #7fb6cc; --road-soft: #1c313b; --done: #6cc496;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+a { color: var(--road); font-weight: 600; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; }
+
+header.top { display: grid; gap: 10px; padding-block-end: 22px; border-bottom: 2px solid var(--ink); margin-bottom: 26px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(48px, 9vw, 92px); line-height: .9; margin: 0; letter-spacing: .01em; text-transform: uppercase; }
+h1 span { color: var(--accent); }
+.lede { max-width: 60ch; font-size: 18px; margin: 4px 0 0; color: var(--ink); }
+.urgent { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; background: var(--accent-soft); border-radius: 10px; padding: 12px 16px; margin-top: 8px; font-size: 15px; }
+.urgent strong { font-weight: 700; }
+.urgent .num { font-family: var(--font-mono); }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+
+.progress { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+.bar { flex: 1; height: 10px; background: var(--road-soft); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--done); transition: width .3s ease; }
+.progress output { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.reset { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 6px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+
+.phase { position: relative; padding-left: 64px; padding-bottom: 34px; }
+.phase::before { content: ""; position: absolute; left: 21px; top: 44px; bottom: 0; width: 4px; background: var(--road-soft); border-radius: 2px; }
+.phase:last-child::before { display: none; }
+.marker { position: absolute; left: 0; top: 0; width: 46px; height: 46px; border-radius: 50%; background: var(--road); color: var(--bg); display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 26px; }
+.phase h2 { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1; margin: 6px 0 4px; text-transform: uppercase; letter-spacing: .02em; text-wrap: balance; }
+.phase .when { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+
+.task { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; padding: 16px 0; border-top: 1px solid var(--line); }
+.task input { width: 22px; height: 22px; margin: 3px 0 0; accent-color: var(--done); cursor: pointer; }
+.task label { font-weight: 700; font-size: 17px; cursor: pointer; }
+.task.done label { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 2px; }
+.task p { margin: 4px 0 0; max-width: 62ch; }
+.task .how { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font-size: 15px; }
+.task .tip { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; background: var(--road-soft); color: var(--road); margin-left: 6px; vertical-align: 2px; }
+
+aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); display: grid; gap: 20px; }
+@media (max-width: 860px) { aside { position: static; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.card h3 { font-family: var(--font-display); font-weight: 800; font-size: 26px; text-transform: uppercase; margin: 0 0 4px; letter-spacing: .02em; }
+.card .sub { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+.numbers { list-style: none; margin: 0; padding: 0; display: grid; }
+.numbers li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 11px 0; border-top: 1px solid var(--line); }
+.numbers .what { font-weight: 700; font-size: 15px; }
+.numbers .for { grid-column: 1; font-size: 13px; color: var(--muted); }
+.numbers .num { grid-column: 1; font-family: var(--font-mono); font-size: 16px; font-variant-numeric: tabular-nums; user-select: all; }
+.copy { grid-column: 2; grid-row: 1 / span 3; align-self: center; background: var(--road-soft); color: var(--road); border: 0; border-radius: 8px; padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; min-width: 64px; }
+.copy.ok { background: var(--done); color: var(--surface); }
+.card.note { background: var(--road-soft); border-color: transparent; font-size: 14px; }
+.card.note p { margin: 0 0 8px; }
+.card.note p:last-child { margin: 0; }
+
+footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; max-width: 70ch; }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Los Angeles County · Reentry checklist</div>
+    <h1>Coming Home <span>LA</span></h1>
+    <p class="lede">A plain, step-by-step guide for your first 90 days after release. Check things off as you go. Your checkmarks stay on this device only.</p>
+    <div class="urgent"><strong>Need a bed or food tonight?</strong> Call 211 LA: <span class="num">2-1-1</span> or <span class="num">800-339-6993</span>. In a mental health crisis, call or text <span class="num">988</span>.</div>
+  </header>
+
+  <div class="grid">
+    <main>
+      <div class="progress">
+        <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+        <output id="count" aria-live="polite">0 of 0 done</output>
+        <button class="reset" id="reset" type="button">Clear</button>
+      </div>
+
+      <section class="phase">
+        <div class="marker">1</div>
+        <h2>First 72 hours</h2>
+        <p class="when">Safety, food, and staying in good standing.</p>
+
+        <div class="task"><input type="checkbox" id="t-checkin"><div>
+          <label for="t-checkin">Report to parole or probation</label>
+          <p>Go when your release papers say. Bring your release paperwork. Ask your officer about programs, a DMV fee waiver, and bus passes while you're there.</p>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-bed"><div>
+          <label for="t-bed">Line up a safe place to sleep</label>
+          <p>211 LA connects you to shelters and interim housing across the county, any time of day.</p>
+          <div class="how"><a href="https://211la.org" target="_blank" rel="noopener">211la.org</a><span>Call 2-1-1</span></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-food"><div>
+          <label for="t-food">Find food for today</label>
+          <p>Food Oasis LA maps free pantries and meals near you. CalFresh can sometimes be approved in as little as 3 days in an emergency, so apply right away (see Week 1).</p>
+          <div class="how"><a href="https://foodoasis.la" target="_blank" rel="noopener">foodoasis.la</a></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-phone"><div>
+          <label for="t-phone">Get a working phone</label>
+          <p>You'll need a number for jobs, benefits, and your officer. California LifeLine offers discounted phone service to people with low income or on programs like CalFresh or Medi-Cal.</p>
+          <div class="how"><a href="https://www.californialifeline.com" target="_blank" rel="noopener">californialifeline.com</a></div>
+        </div></div>
+      </section>
+
+      <section class="phase">
+        <div class="marker">2</div>
+        <h2>Week 1</h2>
+        <p class="when">Papers and benefits. These unlock almost everything else.</p>
+
+        <div class="task"><input type="checkbox" id="t-id"><div>
+          <label for="t-id">Get your California ID <span class="tag">Key</span></label>
+          <p>If you left state prison through the CAL-ID program, you may already have one. If not, make a DMV appointment. Your probation officer can help you apply for a fee waiver.</p>
+          <div class="how"><a href="https://www.dmv.ca.gov" target="_blank" rel="noopener">dmv.ca.gov</a><a href="https://www.cdcr.ca.gov/rehabilitation/calid/" target="_blank" rel="noopener">About CAL-ID</a></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-ssn"><div>
+          <label for="t-ssn">Replace your Social Security card</label>
+          <p>Most jobs ask for it. Request a replacement from Social Security.</p>
+          <div class="how"><a href="https://www.ssa.gov" target="_blank" rel="noopener">ssa.gov</a></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-benefits"><div>
+          <label for="t-benefits">Apply for CalFresh, Medi-Cal, and General Relief <span class="tag">Key</span></label>
+          <p>One application on BenefitsCal covers food (CalFresh / EBT), health care (Medi-Cal), and cash aid (General Relief or CalWORKs). You can also apply by phone with LA County DPSS.</p>
+          <div class="how"><a href="https://benefitscal.com" target="_blank" rel="noopener">benefitscal.com</a><span>DPSS: 866-613-3777</span></div>
+        </div></div>
+      </section>
+
+      <section class="phase">
+        <div class="marker">3</div>
+        <h2>First month</h2>
+        <p class="when">Get a team behind you: case management, work, and recovery support.</p>
+
+        <div class="task"><input type="checkbox" id="t-jcod"><div>
+          <label for="t-jcod">Connect with LA County reentry services</label>
+          <p>The county's Justice, Care and Opportunities Department (JCOD) runs free programs: case managers with lived experience, housing help, legal aid, and paid job training. There's also a program just for women, and one for young adults 18 to 26.</p>
+          <div class="how"><a href="https://jcod.lacounty.gov" target="_blank" rel="noopener">jcod.lacounty.gov</a><a href="https://justiceconnect.org" target="_blank" rel="noopener">JusticeConnect.org</a><span>833-522-5263</span></div>
+          <p class="tip">Antelope Valley: ask about the D.O.O.R.S. reentry center, which also links people to free record-clearing help.</p>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-work"><div>
+          <label for="t-work">Start on work</label>
+          <p>JCOD's SECTOR program offers training and paid work experience. Homeboy Industries in downtown LA hires and trains people coming home and offers case management.</p>
+          <div class="how"><a href="https://homeboyindustries.org" target="_blank" rel="noopener">homeboyindustries.org</a></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-recovery"><div>
+          <label for="t-recovery">Line up recovery support if you need it</label>
+          <p>The county's Substance Abuse Service Helpline screens you and refers you to treatment, including outpatient, residential, and medication programs. Medi-Cal covers most of it.</p>
+          <div class="how"><a href="http://publichealth.lacounty.gov/sapc/" target="_blank" rel="noopener">LA County SAPC</a><span>1-844-804-7500</span></div>
+        </div></div>
+      </section>
+
+      <section class="phase">
+        <div class="marker">4</div>
+        <h2>Months 2 to 3</h2>
+        <p class="when">Clear the path ahead.</p>
+
+        <div class="task"><input type="checkbox" id="t-record"><div>
+          <label for="t-record">Look into clearing your record</label>
+          <p>The LA County Public Defender offers free expungement help. California expanded which convictions qualify in 2023, so ask even if you were told no before. Some old felonies may also be reduced under Prop 47.</p>
+          <div class="how"><a href="https://pubdef.lacounty.gov" target="_blank" rel="noopener">pubdef.lacounty.gov</a><span>213-204-9904</span></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-vote"><div>
+          <label for="t-vote">Register to vote</label>
+          <p>In California, your right to vote comes back once you finish your prison term, even if you're on parole or probation.</p>
+          <div class="how"><a href="https://registertovote.ca.gov" target="_blank" rel="noopener">registertovote.ca.gov</a></div>
+        </div></div>
+
+        <div class="task"><input type="checkbox" id="t-plan"><div>
+          <label for="t-plan">Make a 6-month plan with your case manager</label>
+          <p>Set goals for stable housing, steady income, and school or training. Bring this checklist so they can see what's already done.</p>
+        </div></div>
+      </section>
+    </main>
+
+    <aside>
+      <div class="card">
+        <h3>Numbers to keep</h3>
+        <p class="sub">Tap Copy, then paste into your phone.</p>
+        <ul class="numbers" id="numbers"></ul>
+      </div>
+      <div class="card note">
+        <p><strong>For family and friends:</strong> You can work through this list together. Most of these services also help the people supporting someone coming home.</p>
+        <p>Programs and phone numbers change. Call ahead to confirm hours and what to bring.</p>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    Information checked September 2026 from LA County, State of California, and program websites. This page is a guide, not legal advice. For help with your specific case, contact the Public Defender or a legal aid office.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var nums = [
+    ["211 LA", "Shelter, food, any local service", "2-1-1 or 800-339-6993"],
+    ["Crisis line", "Call or text, 24/7", "988"],
+    ["LA County Reentry (JCOD)", "Reentry programs and support", "833-522-5263"],
+    ["DPSS benefits", "CalFresh, Medi-Cal, General Relief", "866-613-3777"],
+    ["Substance use helpline", "Screening and treatment referral", "1-844-804-7500"],
+    ["Public Defender", "Free record clearing", "213-204-9904"]
+  ];
+  var ul = document.getElementById("numbers");
+  nums.forEach(function (n) {
+    var li = document.createElement("li");
+    li.innerHTML = '<span class="what"></span><span class="for"></span><span class="num"></span><button class="copy" type="button">Copy</button>';
+    li.querySelector(".what").textContent = n[0];
+    li.querySelector(".for").textContent = n[1];
+    li.querySelector(".num").textContent = n[2];
+    var btn = li.querySelector(".copy");
+    btn.setAttribute("aria-label", "Copy number for " + n[0]);
+    btn.addEventListener("click", function () {
+      var numEl = li.querySelector(".num");
+      function done() { btn.textContent = "Copied"; btn.classList.add("ok"); setTimeout(function () { btn.textContent = "Copy"; btn.classList.remove("ok"); }, 1600); }
+      function fallback() { var r = document.createRange(); r.selectNodeContents(numEl); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected"; }
+      try { navigator.clipboard.writeText(n[2]).then(done, fallback); } catch (e) { fallback(); }
+    });
+    ul.appendChild(li);
+  });
+
+  var KEY = "coming-home-la-checks";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".task input[type=checkbox]"));
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  function update() {
+    var n = 0;
+    boxes.forEach(function (b) { b.closest(".task").classList.toggle("done", b.checked); if (b.checked) n++; });
+    document.getElementById("count").textContent = n + " of " + boxes.length + " done";
+    document.getElementById("fill").style.width = (n / boxes.length * 100) + "%";
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener("change", function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      update();
+    });
+  });
+  document.getElementById("reset").addEventListener("click", function () {
+    boxes.forEach(function (b) { b.checked = false; });
+    saved = {};
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    update();
+  });
+  update();
+})();
+</script>
+</body>
+</html>
